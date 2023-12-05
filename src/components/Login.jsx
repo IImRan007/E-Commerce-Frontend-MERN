@@ -1,8 +1,41 @@
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import LoginImage from "../assets/login.svg";
+import { useContext, useState } from "react";
+import { UserContext } from "../context/user/UserContext";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { login } from "../context/user/UserActions";
 
 const Login = () => {
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { userDispatch } = useContext(UserContext);
+
+  const handleChange = (e) => {
+    setUserData((prevState) => ({
+      ...prevState,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await login(userData);
+      userDispatch({ type: "LOGIN_USER", payload: data });
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <section>
       <div className="grid grid-cols-1 lg:grid-cols-2 h-[100vh]">
@@ -20,11 +53,11 @@ const Login = () => {
                 Create a free account
               </Link>
             </p>
-            <form action="#" method="POST" className="mt-8">
+            <form onSubmit={handleLogin} className="mt-8">
               <div className="space-y-5">
                 <div>
                   <label
-                    htmlFor=""
+                    htmlFor="email"
                     className="text-base font-medium text-gray-900"
                   >
                     {" "}
@@ -35,13 +68,16 @@ const Login = () => {
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="email"
                       placeholder="Email"
+                      name={userData.email}
+                      id="email"
+                      onChange={handleChange}
                     ></input>
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
                     <label
-                      htmlFor=""
+                      htmlFor="password"
                       className="text-base font-medium text-gray-900"
                     >
                       {" "}
@@ -61,12 +97,15 @@ const Login = () => {
                       className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                       type="password"
                       placeholder="Password"
+                      name={userData.password}
+                      id="password"
+                      onChange={handleChange}
                     ></input>
                   </div>
                 </div>
                 <div>
                   <button
-                    type="button"
+                    type="submit"
                     className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
                   >
                     Get started <FaArrowRight className="ml-2" size={16} />
@@ -91,22 +130,6 @@ const Login = () => {
                 </span>
                 Sign in with Google
               </button>
-              <button
-                type="button"
-                className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
-              >
-                <span className="mr-2 inline-block">
-                  <svg
-                    className="h-6 w-6 text-[#2563EB]"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"></path>
-                  </svg>
-                </span>
-                Sign in with Facebook
-              </button>
             </div>
           </div>
         </div>
@@ -118,6 +141,7 @@ const Login = () => {
           />
         </div>
       </div>
+      <Toaster />
     </section>
   );
 };

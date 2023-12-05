@@ -1,16 +1,23 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// Pages
 import ErrorPage from "./components/ErrorPage.jsx";
 import Login from "./components/Login.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./components/Signup.jsx";
+// Context
+import { UserProvider } from "./context/user/UserContext.jsx";
+import PrivateRoute from "./utils/PrivateRoute.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
     errorElement: <ErrorPage />,
   },
   {
@@ -24,7 +31,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <UserProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </UserProvider>
 );
