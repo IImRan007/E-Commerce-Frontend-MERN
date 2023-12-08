@@ -3,7 +3,7 @@ import { FaArrowDown, FaArrowRight } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GrClose } from "react-icons/gr";
 import { UserContext } from "../context/user/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../context/user/UserActions";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -29,7 +29,9 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { userDispatch } = useContext(UserContext);
+  const { userDispatch, userState } = useContext(UserContext);
+
+  console.log(userState);
 
   const navigate = useNavigate();
 
@@ -78,6 +80,19 @@ const Navbar = () => {
                 </a>
               </li>
             ))}
+            {userState.user.admin === true && (
+              <li key={"Dashboard"}>
+                <Link
+                  to={"/dashboard"}
+                  className="inline-flex items-center text-sm font-semibold text-gray-800 hover:text-gray-900"
+                >
+                  Dashboard
+                  <span>
+                    <FaArrowDown className="ml-2 h-4 w-4" />
+                  </span>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
         <div className="flex grow justify-end">

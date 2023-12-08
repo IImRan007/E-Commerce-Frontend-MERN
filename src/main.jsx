@@ -9,6 +9,8 @@ import Signup from "./components/Signup.jsx";
 // Context
 import { UserProvider } from "./context/user/UserContext.jsx";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
+import { ProductProvider } from "./context/product/ProductContext.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,10 +30,16 @@ const router = createBrowserRouter([
     path: "sign-up",
     element: <Signup />,
   },
+  {
+    path: "dashboard",
+    element: <Dashboard />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <UserProvider>
-    <RouterProvider router={router} />
+    <ProductProvider>
+      <RouterProvider router={router} />
+    </ProductProvider>
   </UserProvider>
 );
